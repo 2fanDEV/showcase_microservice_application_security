@@ -1,0 +1,26 @@
+<!-- https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BA Login</title>
+</head>
+<body>
+    <h1> Please Log In</h1>
+<div th:if="${error}" th:text="${error}">
+    Invalid username and password
+</div>
+<div th:if="${param.logout}">
+    You've been logged out.
+</div>
+    <form th:action="@{/api/v0/auth-service/login}" method="post">
+        <div>
+            <input type="text" name="username" placeholder="Username"/>
+        </div>
+        <div>
+            <input type="password" name="password" placeholder="Password"/>
+        </div>
+        <input type="submit" value="Log in" />
+    </form>
+</body>
+</html>

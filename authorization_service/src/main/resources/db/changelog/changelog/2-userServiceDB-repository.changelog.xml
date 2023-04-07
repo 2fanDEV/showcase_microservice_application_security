@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <!-- include file="/db/changelog0_changelog..."/-->
+    <!-- create our own user schema -->
+
+    <changeSet id="userschema" author="Oezen, Tufan">
+
+        <createTable tableName="users">
+            <column name="username" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_account_non_expired" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_account_non_locked" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_credentials_non_expired" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <!-- the authorities a user can have
+        https://docs.spring.io/spring-security/reference/servlet/appendix/database-schema.html
+         transported into liquibase syntax so we can have a User that has multiple authorities, if needed
+         -->
+
+        <createTable tableName="authorities">
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false"
+                             foreignKeyName="fk_authorities_users"
+                             references="users(username)"
+                             />
+            </column>
+            <column name="authority" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex unique="true" indexName="index_auth_username" tableName="authorities">
+            <column name="username"/>
+            <column name="authority"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

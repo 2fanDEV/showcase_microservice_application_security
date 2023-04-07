@@ -1,0 +1,19 @@
+<div class="screen">
+  <mat-drawer-container class="drawerContainer">
+    <mat-drawer class="drawer" mode="side" opened>
+      <div class="buttonWrapper">
+        <div class="buttons">
+          <div class="username" *ngIf="this.loggedIn && this.userName != undefined" style="color: white;"> {{ this.userName }}</div>
+          <button class="button" (click)="this.routeToFeed()" mat-button>Feed</button>
+          <button class="button" (click)="this.routeToProfile()"    mat-button>Profile</button>
+          <div class="buttonLogin">
+            <app-login></app-login>
+          </div>
+        </div>
+      </div>
+    </mat-drawer>
+    <mat-drawer-content>
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

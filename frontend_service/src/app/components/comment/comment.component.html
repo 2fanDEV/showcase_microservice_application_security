@@ -1,0 +1,63 @@
+<div class="comment" *ngIf="this.collapsedComments.includes(this.blog.id!)">
+  <mat-card class="cardClass2">
+    <mat-card-title>Comments</mat-card-title>
+    <div class="editorTextField">
+      <mat-form-field appearance="outline" style="width: 100%; min-height: 5em">
+        <textarea
+          [(ngModel)]="this.currentText"
+          style="height: 5em"
+          matInput
+        ></textarea>
+      </mat-form-field>
+      <div style="display: flex; justify-content: flex-end">
+        <button
+          (click)="this.sendComment()"
+          mat-flat-button
+          class="sendComment"
+        >
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+      <mat-divider></mat-divider>
+      <div *ngIf="this.allComments == undefined">
+        <mat-progress-spinner></mat-progress-spinner>
+      </div>
+      <div *ngIf="this.allComments != undefined">
+        <div *ngFor="let comment of this.allComments">
+          <mat-card class="cardClass1">
+            <mat-card-title> by {{ comment.username }}</mat-card-title>
+            <mat-card-subtitle style="color: white;">
+              {{
+                comment.creationTimeStamp!.getDate() +
+                  "." +
+                  comment.creationTimeStamp!.getMonth() +
+                  "." +
+                  comment.creationTimeStamp!.getFullYear() +
+                  " " +
+                  comment.creationTimeStamp!.getHours() +
+                  ":" +
+                  comment.creationTimeStamp!.getMinutes()
+              }}
+            </mat-card-subtitle>
+            <mat-card-content>{{ comment.text }}</mat-card-content>
+            <mat-card-actions>
+              <!-- TOGGLE LIKE IF ALREADY LIKED -->
+              <button
+                *ngIf="comment.id! != undefined"
+                mat-button
+                (click)="toggleLikeComment(comment.id!, comment.username, comment.blogId)"
+              >
+                <div *ngIf="!checkIfLiked(comment.id!)">
+                  <mat-icon>favorite_border</mat-icon> {{  this.allCommentsLikeCounter.get(comment.id.toString()) }}
+                </div>
+                <div *ngIf="checkIfLiked(comment.id!)">
+                  <mat-icon>favorite_icon</mat-icon> {{  this.allCommentsLikeCounter.get(comment.id.toString()) }}
+                </div>
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

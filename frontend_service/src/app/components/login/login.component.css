@@ -1,0 +1,37 @@
+.button-grid {
+    display: grid;
+    grid-template-columns: 1;
+    row-gap: 0.5em;
+    margin-right: 3em;
+    grid-template-rows: 45% 43%;
+    width: 5em;
+}
+
+.loginGrid {
+    margin-top: 2em;
+}
+
+.registerButton {
+    width: 100%;
+    background-color: white;
+}
+
+.loginButton { 
+    border: white;
+    border-radius: 5em;
+    border-style: solid;
+    width: 10em;
+}
+
+
+.logoutButton {
+    margin-top: 2em;
+    width: 7em;
+}
+
+.logout { 
+    border: white;
+    border-radius: 5em;
+    border-style: solid;
+    width: 100%;
+}

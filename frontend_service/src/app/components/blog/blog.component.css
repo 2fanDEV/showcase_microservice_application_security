@@ -1,0 +1,283 @@
+@media screen and (min-width: 1921px) {
+  .blogWrapper {
+    margin-top: 3em;
+    display: flex;
+    height: 100%;
+    width: 150em;
+    margin-left: -25em;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+  .blogDiv {
+    justify-self: end;
+    width: 65%;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  .editorTextFieldWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2em;
+    animation: editorTextFieldWrapper 2s ease-in-out;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes editorTextFieldWrapper {
+    0% {
+      background-color: transparent;
+    }
+    100% {
+      background-color: white;
+    }
+  }
+
+  .sendButton {
+    background-color: white;
+    width: 10%;
+    align-self: flex-end;
+    margin-bottom: 2em;
+  }
+
+  .deleteBlogButton { 
+    text-align-last: center;
+    margin-right: -45em;
+    height: 1em;
+  }
+
+  .editorTextField {
+    margin-left: 4em;
+    width: 53em;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .top-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .blogTimeLine {
+    width: 100%;
+    margin-left: -18em;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+  
+
+
+  .cardClass {
+    user-select: none;
+    width: 50em;
+    color: white;
+    background-color: rgb(51, 51, 51);
+    min-height: 10em;
+    max-height: 25em;
+    margin-bottom: 2em;
+  }
+
+  ::ng-deep .mat-focused .mat-form-field {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field.mat-focused .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-divider {
+    border-top-color: white;
+  }
+
+  ::ng-deep .mat-focused .mat-form-field-underline {
+    background-color: white !important;
+  }
+
+  ::ng-deep.mat-form-field-ripple {
+    background-color: white !important;
+}
+}
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  .blogWrapper {
+    margin-top: 3em;
+    display: flex;
+    height: 100%;
+    width: 150em;
+    margin-left: -25em;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+  .blogDiv {
+    justify-self: end;
+    width: 65%;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  .sendButton {
+    background-color: white;
+    width: 10%;
+    align-self: flex-end;
+    margin-bottom: 2em;
+  }
+
+  .editorTextField {
+    margin-left: 4em;
+    width: 53em;
+    display: flex;
+    color: white;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .top-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .blogTimeLine {
+    width: 100%;
+    margin-left: -18em;
+    display: flex;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  .deleteBlogButton { 
+    text-align-last: center;
+    margin-right: -45em;
+    height: 1em;
+  }
+
+
+  .cardClass {
+    user-select: none;
+    width: 50em;
+    color: white;
+    background-color: rgb(51, 51, 51);
+    min-height: 10em;
+    max-height: 25em;
+    margin-bottom: 2em;
+  }
+ 
+  ::ng-deep .mat-focused .mat-form-field {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field.mat-focused .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-divider {
+    border-top-color: white;
+  }
+
+
+  ::ng-deep .mat-focused .mat-form-field-underline {
+    background-color: white !important;
+  }
+
+  ::ng-deep.mat-form-field-ripple {
+    background-color: white !important;
+  }
+}
+
+.blogWrapper {
+  margin-top: 3em;
+  display: flex;
+  height: 100%;
+  width: 150em;
+  margin-left: -25em;
+  justify-content: center;
+  overflow-x: hidden;
+}
+.blogDiv {
+  justify-self: end;
+  width: 65%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+.sendButton {
+  background-color: white;
+  width: 10%;
+  align-self: flex-end;
+  margin-bottom: 2em;
+}
+
+.editorTextField {
+  margin-left: 4em;
+  width: 53em;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.top-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.blogTimeLine {
+  width: 100%;
+  margin-left: -18em;
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+.cardClass {
+  user-select: none;
+  width: 50em;
+  color: white;
+  background-color: rgb(51, 51, 51);
+  min-height: 10em;
+  max-height: 25em;
+  margin-bottom: 2em;
+}
+
+::ng-deep .mat-focused .mat-form-field {
+  color: white;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-outline {
+  color: white;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: white;
+}
+
+::ng-deep .mat-form-field-outline {
+  color: white;
+}
+
+::ng-deep .mat-divider {
+  border-top-color: white;
+}
+
+::ng-deep .mat-focused .mat-form-field-underline {
+  background-color: white !important;
+}
+
+
+::ng-deep.mat-form-field-ripple {
+  background-color: white !important;
+}

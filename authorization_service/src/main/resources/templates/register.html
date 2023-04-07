@@ -1,0 +1,33 @@
+<!-- https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/form.html-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BA Registration</title>
+</head>
+<body>
+<h1> Please register</h1>
+<div th:if="${param.error}">
+    Invalid usernamme and password
+</div>
+<div th:if="${param.logout}">
+    You've been logged out.
+</div>
+<form th:action="@{/api/v0/auth-service/registerUser}" method="post">
+    <div>
+        <input type="text" name="username" placeholder="Username"/>
+    </div>
+    <div>
+        <input type="email" name="email" placeholder="E-Mail Address"/>
+    </div>
+    <div>
+        <input type="text" name="firstName" placeholder="First Name"/>
+        <input type="text" name="lastName" placeholder="Last Name"/>
+    </div>
+    <div>
+        <input type="password" name="password" placeholder="Password"/>
+    </div>
+    <input type="submit" value="Register" />
+</form>
+</body>
+</html>

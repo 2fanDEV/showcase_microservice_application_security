@@ -1,0 +1,309 @@
+#docker-compose for whole application
+# general documentation for docker compose
+# https://docs.docker.com/compose/gettingstarted/
+version: '3.3'
+
+services:
+
+  ################################################
+  # DOCKER POSTGRES BASES FOR SERVICES FOLLOWING #
+  ################################################
+
+  #https://hub.docker.com/_/postgres 
+  #for the environment variables
+
+  #userservice postgresdb
+  #using the dockerfile in the psql directory of the userservice
+  user-service-db:
+    container_name: psql_userservice_db
+    build:
+      context: ./userservice/psql_userservice_database_docker
+      dockerfile: Dockerfile
+    #environment variables for the database 
+    #like username and password to access
+    environment:
+      POSTGRES_DB: user-service
+      POSTGRES_USER: user-service-admin
+      POSTGRES_PASSWORD: 7gUfAGbLNU9ssiBxESxEvyA%5KR&P
+    #port failure
+    ports:
+      - "5433:5432"
+    # try to always restart if container exits for some reason
+    restart: always
+
+  # authorization-service postgresdb
+  # above comments apply to all databases
+  authorization-service-db:
+    container_name: psql_authorization_service_db
+    build:
+      context: ./authorization_service/psql_authorization_database_docker
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: authorization-service
+      POSTGRES_USER: authorization-admin-service
+      POSTGRES_PASSWORD: SqBJ2iD!iKynBwW2%Q3@&66H&PgM7
+    ports:
+      - "5434:5432"
+    restart: always
+
+
+  # blogservice postgredb
+
+  blog-service-db:
+    container_name: psql_blog_service_db
+    build:
+      context: ./blogservice/psql_blog_service
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: blog-service
+      POSTGRES_USER: blog-service-admin
+      POSTGRES_PASSWORD: bNsmaiK7KZaz%WxndxE%RAFU2Dyo
+    ports:
+      - "5435:5432"
+    restart: always
+
+  #commentservice postgredb
+
+  comment-service-db:
+    container_name: psql_comment_service_db
+    build:
+      context: ./commentService/psql_comment_service_database_docker
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: comment-service
+      POSTGRES_USER: comment-admin-service
+      POSTGRES_PASSWORD: 3YkV%9aQUsBBQCNPZs2FHLrSQfx63
+    ports:
+      - "5436:5432"
+    restart: always
+
+  #statisticsservice postgredb
+
+  statistics-service-db:
+    container_name: psql_statisticservice
+    build:
+      context: ./statisticsService/psql_statistic_database_docker
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: statistic-service
+      POSTGRES_USER: statistic-service-admin
+      POSTGRES_PASSWORD: 7gUfAGbLNU9ssiBxESxEvyA%5KR&P
+    ports:
+      - "5438:5432"
+    restart: always
+
+  #################################################
+  # KAFKA & DASHBOARD DOCKER CONTAINERS FOLLOWING #
+  #################################################
+
+  # zookeeper
+
+  #kafka_zookeeper:
+  #  container_name: kafka_zookeeper
+  #  build:
+  #    context: ./Kafka
+  #    dockerfile: zookeeper.dockerfile
+  #  ports:
+  #    - "2181:2181"
+  #    - "2888:2888"
+  #    - "3888:3888"
+  # server
+
+  #kafka_server:
+  #  container_name: kafka_server
+  #  build:
+  #    context: ./Kafka
+  #    dockerfile: kafka.dockerfile
+  #  depends_on:
+  #    - kafka_zookeeper
+  #  ports:
+  #    - "9092:9092"
+  #    - "9093:9093"
+
+  #https://hub.docker.com/_/redis
+  # redis database for the api gateway ratelimiter
+  redis:
+    container_name: redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+  #the prometheus image for the api gateway metrics endpoint
+  #grafana reads from prometheus
+  prometheus:
+    container_name: prometheus
+    build: 
+      context: ./Prometheus
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "9090:9090"
+
+  #grafana dashboard
+  #https://hub.docker.com/r/grafana/grafana
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:8.2.6
+    restart: always
+    ports:
+      - "3000:3000"
+
+  ################################################
+  # SPRING CONTAINERS FOLLOWING AFTER THIS POINT #
+  ################################################
+
+  # eureka discovery service
+
+  server_eureka_discovery:
+    container_name: server_eureka_discovery
+    #using the dockerfile in the eureka directory
+    build:
+      context: ./server_discovery_eureka
+      dockerfile: Dockerfile
+    #overwriting the profile that has a default value of "dev" in
+    #the dockerfile
+    environment:
+      - PROFILE=docker
+    #port mapping
+    ports:
+      - "8762:8762"
+    restart: always
+
+  # authorization service
+
+  authorization_service:
+    container_name: authorization_service
+    # using the image that I uploaded to Docker Hub as the jar file created with the
+    # maven command does not work on UNIX based system due to missing files
+    # https://docs.docker.com/engine/reference/commandline/push/#examples
+    image: 2fandev/showcase_application:authorization_service
+    environment:
+    - PROFILE=docker
+    depends_on:
+      - authorization-service-db
+    ports:
+      - "8977:8977"
+    restart: always
+
+  # api_gateway
+
+  api_gateway:
+    container_name: api_gateway
+    build:
+      context: ./api_gateway
+      dockerfile: Dockerfile
+    environment:
+      - PROFILE=docker
+    depends_on:
+      - redis
+      - authorization_service
+    ports:
+      - "8102:8102"
+    restart: always
+
+  # token_service
+
+  token_service:
+    container_name: token_service
+    build:
+      context: ./token_service
+      dockerfile: Dockerfile
+    depends_on:
+      - authorization_service
+    environment:
+      - PROFILE=docker
+    ports:
+      - "8333:8333"
+    restart: always
+
+
+  # user_service
+
+  user_service:
+    container_name: user_service
+    build:
+      context: ./userservice
+      dockerfile: Dockerfile
+    depends_on:
+      - authorization_service
+    environment:
+      - PROFILE=docker
+    ports:
+      - "8342:8342"
+    restart: always
+
+  # blog_service
+
+  blog_service:
+    container_name: blog_service
+    build:
+      context: ./blogservice
+      dockerfile: Dockerfile
+    depends_on:
+      - authorization_service
+    environment:
+      - PROFILE=docker
+    ports:
+      - "8337:8337"
+
+  # comment_service
+
+  comment_service:
+    container_name: comment_service
+    build:
+      context: ./commentService
+      dockerfile: Dockerfile
+    depends_on:
+      - authorization_service
+    environment:
+      - PROFILE=docker
+    ports:
+      - "8188:8188"
+    restart: always
+
+ # statistics_service
+
+  statistics_service:
+    container_name: statistics_service
+    build:
+      context: ./statisticsService
+      dockerfile: Dockerfile
+    depends_on:
+      - authorization_service
+    environment:
+      - PROFILE=docker
+    ports:
+      - "8992:8992"
+
+ # logging_service
+
+  logging_service:
+    container_name: logging_service
+    build:
+      context: ./loggingService
+    environment:
+      - PROFILE=docker
+    ports:
+      - "8739:8739"
+
+  #####################################
+  # NGINX - FRONTEND DOCKER CONTAINER #
+  #####################################
+
+  frontend_service:
+    container_name: frontend_service
+    build:
+      context: ./frontend_service
+      dockerfile: Dockerfile
+    depends_on: 
+      - server_eureka_discovery
+      - api_gateway
+      - user_service
+      - statistics_service
+      - comment_service
+      - blog_service
+      - authorization_service
+    ports:
+      - "80:80"
+      - "443:443"

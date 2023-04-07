@@ -1,0 +1,276 @@
+#https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/
+#https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
+#https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
+
+# defining the port and the api gateway name
+server:
+    port: 8102
+spring:
+    application:
+        name: API_GATEWAY
+---
+# DEVELOPER SETTINGS
+
+# setting that this profile only activates if the developer profile is passed through argument at startup
+spring:
+    config:
+        activate:
+            on-profile: dev
+    cloud:
+    # enabling the resilience4j circuitbreaker
+        circuitbreaker:
+            resilience4j:
+                enabled: true
+    # defining that the gateway is locating through the discovery client
+    #https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.0.RC2/reference/html/#discoveryclient-route-definition-locator
+        gateway:
+            discovery:
+                locator:
+                    enabled: true
+            enabled: true
+            filter:
+                circuit-breaker:
+                    enabled: true
+    # attempt at passing the SSL configuration into the httpclient, which did not work
+    # https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.2.0.RC2/reference/html/#tls-ssl
+            httpclient:
+                ssl:
+                    key-store: classpath:microservices.p12
+                    key-store-password: 123456
+                    key-store-type: PKCS12
+                    use-insecure-trust-manager: true
+    # specifying the locations for the kafka message broker and setting the max request size as
+    # otherwise the files would not be sent
+    #https://docs.spring.io/spring-kafka/docs/current/reference/html/
+    #https://manpreetsinghdor.medium.com/spring-kafka-testing-your-kafka-broker-in-local-50eee361deb6
+    kafka:
+        bootstrap-servers: SSL://localhost:9092
+        producer:
+            properties:
+                max:
+                    request:
+                        size: 200000000
+    # setting for security protocol
+        security:
+            protocol: SSL
+        ssl:
+    #inserting the SSL-certificates for the Kafka client
+    # https://www.baeldung.com/spring-boot-kafka-ssl
+            key-store-location: classpath:microservices.p12
+            key-store-password: 123456
+            key-store-type: PKCS12
+            trust-store-location: classpath:microservices.p12
+            trust-store-password: 123456
+            trust-store-type: PKCS12
+    # at some point the application stopped working until the console told me that
+    # i have to include this in the .yml
+    main:
+        web-application-type: reactive
+    # specifying the location for the redis database for the ratelimiter
+    redis:
+        host: localhost
+        port: 6379
+    # specifying that this server is a resourceserver and to validate jwts
+    # additionally, retrieve jwk-set-uri that includes the public key for validating the jwts
+    # https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html
+    # https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html#oauth2resourceserver-jwt-jwkseturi
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: https://localhost:8977
+                    jwk-set-uri: https://localhost:8977/oauth2/jwks
+    # spring security username and passwort
+        user:
+            name: admin
+            password: admin
+
+# normal ssl configuration, which does not really work and hence the ConfigurationSSL class exists
+# https://dzone.com/articles/hakky54mutual-tls-1
+# the approach with client-auth: need does not work as all requests then are not routed anymore
+# the trust stores inserted here do not work
+server:
+    ssl:
+        enabled: true
+        key-alias: microservices
+        key-store: classpath:microservices.p12
+        key-store-password: 123456
+        key-store-type: PKCS12
+        protocol: TLS v1.2
+        trust-store: classpath:microservices.p12
+        trust-store-password: 123456
+        trust-store-type: PKCS12
+
+#https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/
+#specificy where the eureka server is located and if registering is necessary, or is not necessary and obviously to
+# fetch the current registry upon registering
+eureka:
+    client:
+        eureka-server-location: localhost
+        eureka-server-port: 8762
+        fetch-registry: true
+        register-with-eureka: true
+    # for the http basic password
+        service-url:
+            defaultZone: https://${spring.security.user.name}:${spring.security.user.password}@${eureka.client.eureka-server-location}:${eureka.client.eureka-server-port}/eureka/
+    # registering with eureka and saying the this server is only approachable with https
+    instance:
+        hostname: localhost
+        instance-id: ${eureka.instance.hostname}:${server.port}
+        non-secure-port-enabled: false
+        secure-port: 8102
+        secure-port-enabled: true
+    # setting the logging configuration,
+    # which is the logback-spring.xml file at the resources folder
+    # as we use a different name
+    # for the file
+    # https://docs.spring.io/spring-boot/docs/1.5.x/reference/html/howto-logging.html
+logging:
+    config: classpath:logback-spring.xml
+
+    # https://medium.com/javarevisited/springboot-app-monitoring-with-grafana-prometheus-7c723f0dec15
+    # the endpoint for prometheus is needed so the information is given in the format prometheus needs it
+management:
+    endpoint:
+        prometheus:
+            enabled: true
+   # prometheus needs this endpoint to get the actuator information
+   # so we expose it, such that prometheus can access it
+   # https://medium.com/javarevisited/springboot-app-monitoring-with-grafana-prometheus-7c723f0dec15
+    endpoints:
+        web:
+            exposure:
+                include: prometheus
+
+# these configs are necessary as otherwise
+# while starting the gateway in an IDE shows health indicators.
+# additionally this also enabled that prometheus is able to access the information
+# for the ratelimiter and the circuitbreaker
+# https://resilience4j.readme.io/docs/getting-started-3
+resilience4j:
+    circuitbreaker:
+        configs:
+            default:
+                register-health-indicator: true
+    ratelimiter:
+        configs:
+            default:
+                register-health-indicator: true
+
+
+---
+## DOCKER ENVIRONMENT
+# I know how to create docker container and docker compose files
+# and with usage of environments inside of docker
+# I do not have any clue on how to network with docker containers
+# However I do know, that it is possible on Windows and Mac to access the hostmachines network with host.docker.internal
+# the above configuration is copied and adjusted for these services to run on docker containers for a docker profile.
+
+spring:
+    application:
+        name: API_GATEWAY
+    config:
+        activate:
+            on-profile: docker
+    cloud:
+        circuitbreaker:
+            resilience4j:
+                enabled: true
+        gateway:
+            discovery:
+                locator:
+                    enabled: true
+            enabled: true
+            filter:
+                circuit-breaker:
+                    enabled: true
+            httpclient:
+                ssl:
+                    key-store: ./microservices.p12
+                    key-store-password: 123456
+                    key-store-type: PKCS12
+                    use-insecure-trust-manager: true
+    kafka:
+        bootstrap-servers: SSL://host.docker.internal:9092
+        producer:
+            properties:
+                max:
+                    request:
+                        size: 200000000
+            bootstrap-servers: SSL://host.docker.internal:9092
+        security:
+            protocol: SSL
+        ssl:
+            # inside the docker containers after creating .jar files, the certificate were not found by the
+            # kafka-client and this stackoverflow link helped me to overcome this problem.
+            #https://stackoverflow.com/questions/51200107/spring-kafka-ssl-setup-in-spring-boot-application-yml
+            key-store-location: file:///app/api_gateway/microservices.p12
+            key-store-password: 123456
+            key-store-type: PKCS12
+            trust-store-location: file:///app/api_gateway/microservices.p12
+            trust-store-password: 123456
+            trust-store-type: PKCS12
+        admin:
+            properties:
+              bootstrap.servers: SSL://host.docker.internal:9092
+    main:
+        web-application-type: reactive
+    redis:
+        host: host.docker.internal
+        port: 6379
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: https://host.docker.internal:8977
+                    jwk-set-uri: https://host.docker.internal:8977/oauth2/jwks
+        user:
+            name: admin
+            password: admin
+
+server:
+    ssl:
+        enabled: true
+        key-alias: microservices
+        key-store: ./microservices.p12
+        key-store-password: 123456
+        key-store-type: PKCS12
+        protocol: TLS v1.2
+        trust-store: ./microservices.p12
+        trust-store-password: 123456
+        trust-store-type: PKCS12
+
+eureka:
+    client:
+        eureka-server-location: host.docker.internal
+        eureka-server-port: 8762
+        fetch-registry: true
+        register-with-eureka: true
+        service-url:
+            defaultZone: https://${spring.security.user.name}:${spring.security.user.password}@${eureka.client.eureka-server-location}:${eureka.client.eureka-server-port}/eureka/
+    instance:
+        hostname: host.docker.internal
+        instance-id: ${eureka.instance.hostname}:${server.port}
+        non-secure-port-enabled: false
+        secure-port: 8102
+        secure-port-enabled: true
+logging:
+    config: classpath:logback-spring.xml
+management:
+    endpoints:
+        web:
+            exposure:
+                include: prometheus
+resilience4j:
+    circuitbreaker:
+        configs:
+            default:
+                register-health-indicator: true
+        metrics:
+            enabled: true
+    ratelimiter:
+        configs:
+            default:
+                register-health-indicator: true
+        metrics:
+            enabled: true

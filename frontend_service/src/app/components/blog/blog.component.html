@@ -1,0 +1,111 @@
+<div class="blogWrapper">
+  <div class="blogDiv">
+    <div>
+      <div
+        *ngIf="!this.blogUserLikes && !this.blogUserComments"
+        class="editorTextField"
+      >
+        <mat-form-field appearance="outline">
+          <input
+            [(ngModel)]="this.currentHeading"
+            style="color: white"
+            matInput
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <textarea
+            [(ngModel)]="this.currentText"
+            style="height: 15em; color: white"
+            matInput
+          ></textarea>
+        </mat-form-field>
+        <button (click)="this.sendBlog()" mat-flat-button class="sendButton">
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div
+      *ngIf="this.allBlogs.length == 0"
+      class="blogTimeLine"
+      style="justify-content: center"
+    >
+      <mat-spinner style="margin-bottom: 4em"></mat-spinner>
+    </div>
+    <div class="blogTimeLine">
+      <div *ngIf="this.allBlogs != null">
+        <div *ngFor="let blog of this.allBlogs">
+          <mat-card class="cardClass">
+            <div class="deleteBlogButton">
+              <button mat-raised-button (click)="this.deleteBlog(blog.id!)"><mat-icon>close</mat-icon></button>
+            </div>
+            <mat-card-title style="color: white">
+              {{ blog.heading }}
+            </mat-card-title>
+            <mat-card-subtitle
+              style="color: white"
+              *ngIf="blog.creationTimeStamp != undefined"
+            >
+              <div>
+                <div>
+                  {{
+                    blog.creationTimeStamp.getDate() +
+                      "." +
+                      blog.creationTimeStamp.getMonth() +
+                      "." +
+                      blog.creationTimeStamp.getFullYear() +
+                      " " +
+                      blog.creationTimeStamp.getHours() +
+                      ":" +
+                      blog.creationTimeStamp.getMinutes()
+                  }}
+                </div>
+                <div>
+                  posted by
+                  <button
+                    mat-button
+                    (click)="this.navigateToProfile(blog.username)"
+                  >
+                    {{ blog.username }}
+                  </button>
+                </div>
+              </div>
+            </mat-card-subtitle>
+            <mat-card-content>
+              <p>{{ blog.text }}</p>
+            </mat-card-content>
+            <mat-card-actions>
+              <!-- TOGGLE LIKE IF ALREADY LIKED -->
+              <div>
+                <button
+                  *ngIf="blog.id != undefined"
+                  mat-button
+                  (click)="toggleLikeBlog(blog.id, blog.username)"
+                >
+                  <div *ngIf="!checkIfLiked(blog.id)">
+                    <mat-icon>favorite_border</mat-icon> {{ this.allBlogLikesCounter.get(blog.id.toString()) }}
+                  </div>
+                  <div *ngIf="checkIfLiked(blog.id)">
+                    <mat-icon>favorite_icon</mat-icon> {{  this.allBlogLikesCounter.get(blog.id.toString())  }}
+                  </div>
+                </button>
+                <button
+                  style="margin-top: -0.5em"
+                  (click)="toggleCollapsedCommentsForBlog(blog.id!)"
+                  mat-button
+                >
+                  <mat-icon>chat_bubble_outline</mat-icon>
+                  {{ this.allBlogCommentCounter.get(blog.id!.toString())}}
+                </button>
+              </div>
+            </mat-card-actions>
+          </mat-card>
+          <app-comment
+            [somethingVisible]="this.somethingVisible"
+            [collapsedComments]="this.collapsedCommentsForBlog"
+            [blog]="this.blog!"
+          ></app-comment>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

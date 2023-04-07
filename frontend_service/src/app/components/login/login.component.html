@@ -1,0 +1,13 @@
+<div *ngIf="!this.loggedIn">
+  <div class="loginGrid">
+  <div class="button-grid">
+    <button class="loginButton" mat-stroked-button (click)="this.login()">LOGIN</button>
+    <button class="registerButton" mat-flat-button color="alert" (click)="this.register()">REGISTRIEREN</button>
+  </div>
+  </div>
+</div>
+<div class="logoutButton" *ngIf="this.loggedIn">
+  <button class="logout" mat-stroked-button (click)="this.logout()">LOGOUT</button> 
+</div>
+
+

@@ -1,0 +1,1 @@
+CREATE DATABASE backend_user_service_db;

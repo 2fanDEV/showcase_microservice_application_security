@@ -1,0 +1,18 @@
+# postgres docker commpose for credentials
+#https://hub.docker.com/_/postgres 
+#for the environment variables
+version: '3.3'
+
+services:
+  statistics-service-db:
+    container_name: psql_statisticservice
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: statistic-service
+      POSTGRES_USER: statistic-service-admin
+      POSTGRES_PASSWORD: 7gUfAGbLNU9ssiBxESxEvyA%5KR&P
+    ports:
+      - "5438:5432"
+    restart: always

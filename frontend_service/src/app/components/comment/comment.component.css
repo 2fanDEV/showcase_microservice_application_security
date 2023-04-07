@@ -1,0 +1,58 @@
+.cardClass1 {
+  user-select: none;
+  width: 45em;
+  color: white;
+  background-color: rgb(54, 54, 54);
+  min-height: 10em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 1em;
+}
+
+.comment { 
+  margin-left: 2em;
+}
+
+.cardClass2 {
+    user-select: none;
+    width: 50em;
+    color: white;
+    background-color: rgb(34, 34, 34);
+    min-height: 10em;
+    margin-bottom: 2em;
+}
+
+.sendComment {
+  background-color: white;
+  width: 10%;
+  align-self: flex-end;
+  margin-bottom: 2em;
+}
+
+  ::ng-deep .mat-focused .mat-form-field {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field.mat-focused .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-form-field-outline {
+    color: white;
+  }
+
+  ::ng-deep .mat-divider {
+    border-top-color: rgb(66, 66, 66);
+  }
+
+  ::ng-deep .mat-focused .mat-form-field-underline {
+    background-color: white !important;
+  }
+
+  ::ng-deep.mat-form-field-ripple {
+    background-color: white !important;
+  }

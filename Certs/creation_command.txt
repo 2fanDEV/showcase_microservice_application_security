@@ -1,0 +1,14 @@
+https://ultimatesecurity.pro/post/san-certificate/
+https://www.baeldung.com/spring-boot-https-self-signed-certificate
+
+These certificates are created with the tutorial given by 
+the above mentioned links
+
+https://www.ssl.com/how-to/export-certificates-private-key-from-pkcs12-file-with-openssl/
+
+these helped to create the .crt and .key files 
+
+as NGINX did not accept the .key file as there was still the passphrase on it
+the following link did explain on how to remove it for the NGINX config.
+
+https://superuser.com/questions/1030917/remove-key-password-with-openssl

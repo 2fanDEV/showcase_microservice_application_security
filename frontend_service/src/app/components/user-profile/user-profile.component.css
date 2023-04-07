@@ -1,0 +1,50 @@
+::ng-deep.mat-tab-label-content { 
+    color: white;
+}
+
+::ng-deep.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar { 
+    background-color: white;;
+}
+
+::ng-deep.mat-tab-labels { 
+    display: flex;
+    justify-content: center;
+    margin-right: 11em;
+}
+
+.profileCardContainer{ 
+    display: flex;
+    justify-content: center;
+    width: 75em;
+    margin-top: 5em;
+    margin-left: -5.5em;
+}
+
+.profileScreen { 
+    overflow: hidden;
+}
+
+.blogComponent { 
+    overflow: hidden;
+}
+
+
+.cardClass {
+    user-select: none;
+    width: 50em;
+    color: white;
+    background-color: rgb(51, 51, 51);
+    min-height: 25em;
+    max-height: 25em;
+    margin-bottom: 2em;
+  }
+
+
+.matTabContainer { 
+    display: flex;
+    width: 75em;
+}
+
+::ng-deep.mat-tab-body-content  { 
+    overflow: hidden !important;
+}

@@ -1,0 +1,64 @@
+<div class="profileScreen">
+  <div *ngIf="this.profileUser == undefined"><mat-spinner></mat-spinner></div>
+  <div class="profileCardContainer" *ngIf="this.profileUser != undefined">
+    <mat-card class="cardClass">
+      <mat-card-title> {{ this.username }} </mat-card-title>
+      <!--mat-card-subtitle style="color: white">
+        {{
+           "Hi"
+        }}</mat-card-subtitle
+      -->
+
+      <mat-card-content>
+          <h1 style="font-weight: bolder;">USER STATISTICS</h1>
+      </mat-card-content>
+      <mat-card-content *ngIf="this.profileUser != undefined">
+        <div style="display: grid; grid-template-columns: 50% 50%">
+          <h2>BLOGS POSTED: {{this.profileUser.blogsPosted}}</h2>
+          <h2>COMMENTS POSTED: {{this.profileUser.commentsPosted}} </h2>
+        </div>
+        <div style="display: grid; grid-template-columns: 50% 50%">
+          <h2>LIKES RECEIVED FOR BLOGS:  {{this.profileUser.receivedLikesForBlogs}}</h2>
+          <h2>LIKES RECEIVED FOR COMMENT:  {{this.profileUser.receivedLikesForComments}}</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: 50% 50%">
+          <h2>LIKES GIVEN FOR BLOGS:  {{this.profileUser.givenLikesForBlogs}}</h2>
+          <h2>LIKES GIVEN FOR COMMENTS:  {{this.profileUser.givenLikesForComments}}</h2>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <mat-tab-group
+    class="matTabContainer"
+    (selectedIndexChange)="tabChange($event)"
+  >
+    <mat-tab title="BLOGS" label="BLOGS">
+      <app-blog
+        class="blogComponent"
+        [blogFeed]="false"
+        [blogUsername]="this.userPosts"
+        [blogUserLikes]="false"
+        [blogUserComments]="false"
+      >
+      </app-blog>
+    </mat-tab>
+    <mat-tab title="LIKEDBLOGS" label="LIKED">
+      <app-blog
+        class="blogComponent"
+        [blogFeed]="false"
+        [blogUsername]="false"
+        [blogUserLikes]="this.userLikedPosts"
+        [blogUserComments]="false"
+      ></app-blog>
+    </mat-tab>
+    <mat-tab title="COMMENTS" label="COMMENTS">
+      <app-blog
+        class="blogComponent"
+        [blogFeed]="false"
+        [blogUsername]="false"
+        [blogUserLikes]="false"
+        [blogUserComments]="this.userComment"
+      ></app-blog>
+    </mat-tab>
+  </mat-tab-group>
+</div>

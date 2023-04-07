@@ -1,0 +1,6 @@
+# postgres image von den docker repositories
+#https://hub.docker.com/_/postgres 
+FROM postgres:14.4-alpine
+
+#run init.sql at docker entrypoint
+ADD init.sql /docker-entrypoint-initdb.d

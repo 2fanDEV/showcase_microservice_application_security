@@ -1,0 +1,18 @@
+# postgres docker commpose for credentials
+# https://hub.docker.com/_/postgres 
+# for the environment variables
+version: '3.3'
+
+services:
+  user-service-db:
+    container_name: psql_security_authorization_db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: authorization-service
+      POSTGRES_USER: authorization-admin-service
+      POSTGRES_PASSWORD: SqBJ2iD!iKynBwW2%Q3@&66H&PgM7
+    ports:
+      - "5434:5432"
+    restart: always

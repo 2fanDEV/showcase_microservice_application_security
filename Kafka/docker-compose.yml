@@ -1,0 +1,41 @@
+#docker-compose for whole application
+# this was an attempt to dockerize kafka, however, it does not work
+# as all the services wont connect with it.
+
+# i tried to imlpement it with the wurstmeister image
+# but that doesn't work either.
+
+version: '3.3'
+
+services:
+  kafka_zookeeper:
+    container_name: kafka_zookeeper
+    build:
+      context: .
+      dockerfile: zookeeper.dockerfile
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    networks:
+      - kafka_test
+  # server
+
+  kafka_server:
+    container_name: kafka
+    build:
+      context: .
+      dockerfile: kafka-server.dockerfile
+    depends_on:
+      - kafka_zookeeper
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    networks:
+      - kafka_test
+
+networks:
+  kafka_test:
+    name: kafka_test
+    external: false
+    driver: bridge

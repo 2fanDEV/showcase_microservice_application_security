@@ -1,0 +1,30 @@
+<configuration>
+    <appender name="maskedOutputConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="de.security.microservice.commentservice.Configuration.MaskingPatternConfiguration">
+                <maskPattern>inserted_token\s*:\s*(.*?)\s</maskPattern>
+                <maskPattern>EXTRACTED_TOKEN\s*:\s*(.*?)\s</maskPattern>
+                <pattern>%green(%date{dd MMM yyyy;HH:mm:ss.SSS}) %highlight([%level]) %highlight([%logger{10} %file:%line]) %msg%n</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="maskedOutputFile" class="ch.qos.logback.core.FileAppender">
+        <file>./scheduled/logs/commentservice.log</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="de.security.microservice.commentservice.Configuration.MaskingPatternConfiguration">
+                <maskPattern>inserted_token\s*:\s*(.*?)\s</maskPattern>
+                <maskPattern>EXTRACTED_TOKEN\s*:\s*(.*?)\s</maskPattern>
+                <maskPattern>password\s*:\s*(.*?)\s</maskPattern>
+                <!--https://logback.qos.ch/manual/configuration.html#automaticConf  for the pattern below-->
+                <pattern>%green(%date{dd MMM yyyy;HH:mm:ss.SSS}) %highlight([%level]) %highlight([%logger{10} %file:%line]) %msg%n</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="maskedOutputConsole" />
+        <appender-ref ref="maskedOutputFile"/>
+    </root>
+
+</configuration>

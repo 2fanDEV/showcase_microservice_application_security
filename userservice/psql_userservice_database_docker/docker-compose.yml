@@ -1,0 +1,23 @@
+# postgres docker commpose for credentials
+#https://hub.docker.com/_/postgres 
+#for the environment variables
+version: '3.3'
+
+#postgresdb that is build with the dockerfile in this same directorz
+services:
+  user-service-db:
+    # name of container
+    container_name: psql_userservice
+    #specifying which file to use
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # environment variables necessary for setting the password and user of the database
+    environment:
+      POSTGRES_DB: user-service
+      POSTGRES_USER: user-service-admin
+      POSTGRES_PASSWORD: 7gUfAGbLNU9ssiBxESxEvyA%5KR&P
+    #port mapping: left side is the port on our end and right side is the port in the docker container
+    ports:
+      - "5433:5432"
+    restart: always

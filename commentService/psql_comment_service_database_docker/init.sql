@@ -1,0 +1,1 @@
+CREATE DATABASE backend_comment_service_db;

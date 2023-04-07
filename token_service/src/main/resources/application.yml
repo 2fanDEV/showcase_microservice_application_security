@@ -1,0 +1,159 @@
+#https://spring.io/guides/gs/service-registration-and-discovery/
+#https://docs.spring.io/spring-kafka/docs/current/reference/html/
+
+#defining server port
+server:
+    port: 8333
+
+# defining custom properties
+# with the login information to retrieve tokens
+custom-anonymous-client_id: anonymous-client
+custom-anonymous-client_secret: anonymous
+custom-frontend-client_id: frontend-client
+custom-frontend-client_secret: 1234
+
+---
+# defining application name
+spring:
+    application:
+        name: TOKEN-SERVICE
+    #only activate this configuration with the "dev" profile
+    config:
+        activate:
+            on-profile: dev
+    # specifying the locations for the kafka message broker and setting the max request size as
+    # otherwise the files would not be sent
+    #https://docs.spring.io/spring-kafka/docs/current/reference/html/
+    #https://manpreetsinghdor.medium.com/spring-kafka-testing-your-kafka-broker-in-local-50eee361deb6
+    kafka:
+        bootstrap-servers: SSL://localhost:9092
+        producer:
+            properties:
+                max:
+                    request:
+                        size: 200000000
+        # specifying the security protocol which is used
+        security:
+            protocol: SSL
+        # inserting the ssl certificates for the kafka client
+        # https://www.baeldung.com/spring-boot-kafka-ssl
+        ssl:
+            key-store-location: classpath:microservices.p12
+            key-store-password: 123456
+            key-store-type: PKCS12
+            trust-store-location: classpath:microservices.p12
+            trust-store-password: 123456
+            trust-store-type: PKCS12
+
+# custom property for localhost
+host-value: https://127.0.0.1
+
+# inserting a truststore causes an error that I'm not able to resolve
+# this helped in achieving mTLS https://dzone.com/articles/hakky54mutual-tls-1
+server:
+    ssl:
+        #defining mTLS that incoming requests must also show their certificate
+        # this certificate has to be in the applied truststore which is set in the SSLConfiguration class
+        #https://docs.oracle.com/cd/E19656-01/821-1509/ssl-client-auth-mode-5dsconf/index.html
+        client-auth: need
+        enabled: true
+        key-alias: microservices
+        key-store: classpath:microservices.p12
+        key-store-password: 123456
+
+#https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/
+#specificy where the eureka server is located and if registering is necessary, or is not necessary and obviously to
+# fetch the current registry upon registering
+eureka:
+    client:
+        eureka-server-location: localhost
+        eureka-server-port: 8762
+        fetch-registry: true
+        healthcheck:
+            enabled: true
+        register-with-eureka: true
+        service-url:
+            # defining location of eurekaserver with http basic pw
+            defaultZone: https://admin:admin@${eureka.client.eureka-server-location}:${eureka.client.eureka-server-port}/eureka/
+        should-unregister-on-shutdown: true
+    # registering with eureka information about this server
+    # telling eureka that a non secure port is not enabled and only approachable via https
+    instance:
+        hostname: localhost
+        instance-id: ${eureka.instance.hostname}:${server.port}
+        non-secure-port-enabled: false
+        secure-port: ${server.port}
+        secure-port-enabled: true
+# setting the logging configuration,
+# which is the logback-spring.xml file at the resources folder
+# as we use a different name
+# for the file
+# https://docs.spring.io/spring-boot/docs/1.5.x/reference/html/howto-logging.html
+logging:
+    config: classpath:logback-spring.xml
+---
+##############################
+##  LOCAL DOCKER PROPERTIES ##
+##############################
+## DOCKER ENVIRONMENT
+# I know how to create docker container and docker compose files
+# and with usage of environments inside of docker
+# I do not have any clue on how to network with docker containers
+# However I do know, that it is possible on Windows and Mac to access the hostmachines network with host.docker.internal
+# the above configuration is copied and adjusted for these services to run on docker containers for a docker profile.
+
+spring:
+    application:
+        name: TOKEN-SERVICE
+    config:
+        activate:
+            on-profile: docker
+    kafka:
+        bootstrap-servers: SSL://host.docker.internal:9092
+        producer:
+            properties:
+                max:
+                    request:
+                        size: 200000000
+            bootstrap-servers: SSL://host.docker.internal:9092
+        security:
+            protocol: SSL
+        ssl:
+            key-store-location: file:///app/token_service/microservices.p12
+            key-store-password: 123456
+            key-store-type: PKCS12
+            trust-store-location: file:///app/token_service/microservices.p12
+            trust-store-password: 123456
+            trust-store-type: PKCS12
+        admin:
+            properties:
+              bootstrap.servers: SSL://host.docker.internal:9092
+server:
+    ssl:
+        client-auth: need
+        enabled: true
+        key-alias: microservices
+        key-store: ./microservices.p12
+        key-store-password: 123456
+
+host-value: https://host.docker.internal
+
+eureka:
+    client:
+        eureka-server-location: host.docker.internal
+        eureka-server-port: 8762
+        fetch-registry: true
+        healthcheck:
+            enabled: true
+        register-with-eureka: true
+        service-url:
+            defaultZone: https://admin:admin@${eureka.client.eureka-server-location}:${eureka.client.eureka-server-port}/eureka/
+        should-unregister-on-shutdown: true
+    instance:
+        hostname: host.docker.internal
+        instance-id: ${eureka.instance.hostname}:${server.port}
+        non-secure-port-enabled: false
+        secure-port: ${server.port}
+        secure-port-enabled: true
+logging:
+    config: classpath:logback-spring.xml

@@ -1,0 +1,17 @@
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:file:./testDB/blog-service-h2-test-db
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=true
+
+spring.liquibase.enabled=true
+spring.liquibase.change-log=classpath:/db-test-changelogs/db.changelog.master.test.xml
+spring.liquibase.user=sa
+spring.liquibase.password=password
+
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri=https://localhost:8977/oauth2/jwks
+spring.security.oauth2.resourceserver.jwt.issuer-uri=https://localhost:8977
+
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false

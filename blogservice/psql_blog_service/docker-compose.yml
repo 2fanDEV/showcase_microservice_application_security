@@ -1,0 +1,19 @@
+# postgres docker commpose for credentials
+#https://hub.docker.com/_/postgres 
+#for the environment variables
+
+version: '3.3'
+
+services:
+  user-service-db:
+    container_name: psql_blog_service_db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: blog-service
+      POSTGRES_USER: blog-service-admin
+      POSTGRES_PASSWORD: bNsmaiK7KZaz%WxndxE%RAFU2Dyo
+    ports:
+      - "5435:5432"
+    restart: always

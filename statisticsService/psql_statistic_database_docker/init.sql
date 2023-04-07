@@ -1,0 +1,1 @@
+CREATE DATABASE backend_statistic_service_db;

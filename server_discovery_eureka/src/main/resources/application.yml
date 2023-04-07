@@ -1,0 +1,125 @@
+#https://spring.io/guides/gs/service-registration-and-discovery/
+#https://docs.spring.io/spring-kafka/docs/current/reference/html/
+
+#defining server port and application name
+server:
+    port: 8762
+spring:
+    application:
+        name: Eureka_Server_Service_Discovery
+
+---
+
+# dev settings, if not started by docker containers
+spring:
+    config:
+        activate:
+            on-profile: dev
+    freemarker:
+        prefer-file-system-access: false
+        template-loader-path: classpath:/templates/
+    # specifying the locations for the kafka message broker and setting the max request size as
+    # otherwise the files would not be sent
+    #https://docs.spring.io/spring-kafka/docs/current/reference/html/
+    #https://manpreetsinghdor.medium.com/spring-kafka-testing-your-kafka-broker-in-local-50eee361deb6
+    kafka:
+        bootstrap-servers: SSL://localhost:9092
+        producer:
+            properties:
+                max:
+                    request:
+                        size: 200000000
+        # setting the security protocol
+        security:
+            protocol: SSL
+        # inserting the SSL-Certificates for the Kafka Client
+        ssl:
+            key-store-location: classpath:microservices.p12
+            key-store-password: 123456
+            key-store-type: PKCS12
+            trust-store-location: classpath:microservices.p12
+            trust-store-password: 123456
+            trust-store-type: PKCS12
+    security:
+        user:
+            name: admin
+            password: admin
+
+# inserting a keystore for https connection to eureka server
+# which does not work
+# inserting a truststore causes an error that I'm not able to resolve
+# inserting a truststore causes an error that I'm not able to resolve
+# this helped in achieving mTLS https://dzone.com/articles/hakky54mutual-tls-1
+server:
+    ssl:
+        key-store: classpath:microservices.p12
+        key-store-password: 123456
+
+# setting the logging configuration,
+# which is the logback-spring.xml file at the resources folder
+# as we use a different name
+# for the file
+# https://docs.spring.io/spring-boot/docs/1.5.x/reference/html/howto-logging.html
+logging:
+    config: classpath:logback-spring.xml
+
+---
+## DOCKER ENVIRONMENT
+# I know how to create docker container and docker compose files
+# and with usage of environments inside of docker
+# I do not have any clue on how to network with docker containers
+# However I do know, that it is possible on Windows and Mac to access the hostmachines network with host.docker.internal
+# the above configuration is copied and adjusted for these services to run on docker containers for a docker profile.
+
+spring:
+    config:
+        activate:
+            on-profile: docker
+    freemarker:
+        prefer-file-system-access: false
+        template-loader-path: classpath:/templates/
+    kafka:
+        bootstrap-servers: SSL://host.docker.internal:9092
+        producer:
+            properties:
+                max:
+                    request:
+                        size: 200000000
+            bootstrap-servers: SSL://host.docker.internal:9092
+        security:
+            protocol: SSL
+        # inside the docker containers after creating .jar files, the certificate were not found by the
+        # kafka-client and this stackoverflow link helped me to overcome this problem.
+        #https://stackoverflow.com/questions/51200107/spring-kafka-ssl-setup-in-spring-boot-application-yml
+        ssl:
+            key-store-location: file:///app/service_discovery_eureka/microservices.p12
+            key-store-password: 123456
+            key-store-type: PKCS12
+            trust-store-location: file:///app/service_discovery_eureka/microservices.p12
+            trust-store-password: 123456
+            trust-store-type: PKCS12
+        admin:
+            properties:
+              bootstrap.servers: SSL://host.docker.internal:9092
+    security:
+        user:
+            name: admin
+            password: admin
+
+server:
+  ssl:
+    enabled: true
+    key-store: ./microservices.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+
+
+eureka:
+    client:
+        fetch-registry: false
+        register-with-eureka: false
+        service-url:
+            defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@host.docker.internal:${server.port}/eureka/
+logging:
+    config: classpath:logback-spring.xml
+

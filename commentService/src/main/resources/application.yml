@@ -1,0 +1,195 @@
+#https://spring.io/guides/gs/service-registration-and-discovery/
+#https://docs.spring.io/spring-kafka/docs/current/reference/html/
+#https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
+
+#defining server port
+server:
+    port: 8188
+---
+## LOCAL DEV PROPERTIES
+
+#define application name
+spring:
+    application:
+        name: COMMENT-SERVICE
+    #only activate this configuration with the "dev" profile
+    config:
+        activate:
+            on-profile: dev
+    #define password and username for database
+    #https://docs.liquibase.com/tools-integrations/springboot/springboot.html
+    datasource:
+        password: ${spring.liquibase.password}
+        url: jdbc:postgresql://localhost:5436/backend_comment_service_db
+        username: ${spring.liquibase.user}
+    # specifying the locations for the kafka message broker and setting the max request size as
+    # otherwise the files would not be sent
+    #https://docs.spring.io/spring-kafka/docs/current/reference/html/
+    #https://manpreetsinghdor.medium.com/spring-kafka-testing-your-kafka-broker-in-local-50eee361deb6
+    kafka:
+        bootstrap-servers: SSL://localhost:9092
+        producer:
+            properties:
+                max:
+                    request:
+                        size: 200000000
+      # specifying the security protocol which is used
+        security:
+            protocol: SSL
+      # inserting the ssl certificates for the kafka client
+      #https://www.baeldung.com/spring-boot-kafka-ssl
+        ssl:
+            key-store-location: classpath:microservices.p12
+            key-store-password: 123456
+            key-store-type: PKCS12
+            trust-store-location: classpath:microservices.p12
+            trust-store-password: 123456
+            trust-store-type: PKCS12
+  # telling liquibase where to locate the db changelogs
+  # and defining the pw and username for the database which is inserted above
+  #https://docs.liquibase.com/tools-integrations/springboot/springboot.html
+    liquibase:
+        change-log: /db/db.changelog.master.xml
+        enabled: true
+        password: 3YkV%9aQUsBBQCNPZs2FHLrSQfx63
+        user: comment-admin-service
+  # telling the server where to locate the public key
+  # to validate tokens in incoming requests
+  # https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: https://localhost:8977
+                    jwk-set-uri: https://localhost:8977/oauth2/jwks
+
+# inserting a truststore causes an error that I'm not able to resolve
+# this helped in achieving mTLS https://dzone.com/articles/hakky54mutual-tls-1
+server:
+  ssl:
+    #defining mTLS that incoming requests must also show their certificate
+    # this certificate has to be in the applied truststore which is set in the SSLConfiguration class
+    client-auth: need
+    enabled: true
+    key-store: classpath:microservices.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+
+#https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/
+#specificy where the eureka server is located and if registering is necessary, or is not necessary and obviously to
+# fetch the current registry upon registering
+eureka:
+  client:
+    eureka-server-location: localhost
+    eureka-server-port: 8762
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+    register-with-eureka: true
+    # defining location of eurekaserver tiwth http basic pw
+    service-url:
+      defaultZone: https://admin:admin@${eureka.client.eureka-server-location}:${eureka.client.eureka-server-port}/eureka/
+      should-unregister-on-shutdown: true
+  # registering with eureka information about this server
+  # telling eureka that a non secure port is not enabled and only approachable via https
+  instance:
+    hostname: localhost
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
+    secure-port-enabled: true
+
+# baeldung has a tutorial that helps someone to configure logback in such a way to mask sensitive data
+# setting the logging configuration,
+# which is the logback-spring.xml file at the resources folder
+# as we use a different name
+# for the file
+# https://docs.spring.io/spring-boot/docs/1.5.x/reference/html/howto-logging.html
+logging:
+  config: classpath:logback-spring.xml
+
+
+---
+##############################
+##  LOCAL DOCKER PROPERTIES ##
+##############################
+## DOCKER ENVIRONMENT
+# I know how to create docker container and docker compose files
+# and with usage of environments inside of docker
+# I do not have any clue on how to network with docker containers
+# However I do know, that it is possible on Windows and Mac to access the hostmachines network with host.docker.internal
+# the above configuration is copied and adjusted for these services to run on docker containers for a docker profile.
+
+spring:
+  application:
+    name: COMMENT-SERVICE
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    password: ${spring.liquibase.password}
+    url: jdbc:postgresql://host.docker.internal:5436/backend_comment_service_db
+    username: ${spring.liquibase.user}
+  kafka:
+    bootstrap-servers: SSL://host.docker.internal:9092
+    producer:
+      properties:
+        max:
+          request:
+            size: 200000000
+      bootstrap-servers: SSL://host.docker.internal:9092
+    security:
+      protocol: SSL
+    # inside the docker containers after creating .jar files, the certificate were not found by the
+    # kafka-client and this stackoverflow link helped me to overcome this problem.
+    #https://stackoverflow.com/questions/51200107/spring-kafka-ssl-setup-in-spring-boot-application-yml
+    ssl:
+      key-store-location: file:///app/comment_service/microservices.p12
+      key-store-password: 123456
+      key-store-type: PKCS12
+      trust-store-location: file:///app/comment_service/microservices.p12
+      trust-store-password: 123456
+      trust-store-type: PKCS12
+    admin:
+      properties:
+        bootstrap.servers: SSL://host.docker.internal:9092
+  liquibase:
+    change-log: classpath:/db/db.changelog.master.xml
+    enabled: true
+    password: 3YkV%9aQUsBBQCNPZs2FHLrSQfx63
+    user: comment-admin-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://host.docker.internal:8977
+          jwk-set-uri: https://host.docker.internal:8977/oauth2/jwks
+
+server:
+  ssl:
+    client-auth: need
+    enabled: true
+    key-store: ./microservices.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+
+eureka:
+  client:
+    eureka-server-location: host.docker.internal
+    eureka-server-port: 8762
+    fetch-registry: true
+    healthcheck:
+      enabled: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: https://admin:admin@${eureka.client.eureka-server-location}:${eureka.client.eureka-server-port}/eureka/
+      should-unregister-on-shutdown: true
+  instance:
+    hostname: host.docker.internal
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
+    secure-port-enabled: true
+
+logging:
+  config: classpath:logback-spring.xml

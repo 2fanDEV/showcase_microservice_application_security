@@ -1,0 +1,18 @@
+# postgres docker compose for credentials
+#https://hub.docker.com/_/postgres 
+#for the environment variables
+version: '3.3'
+
+services:
+  comment-service-db:
+    container_name: psql_comment_service_db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: comment-service
+      POSTGRES_USER: comment-admin-service
+      POSTGRES_PASSWORD: 3YkV%9aQUsBBQCNPZs2FHLrSQfx63
+    ports:
+      - "5436:5432"
+    restart: always

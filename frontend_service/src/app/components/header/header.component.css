@@ -1,0 +1,197 @@
+@media screen and (min-width: 1280px) and (max-width: 1920px) {
+  .buttons {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 25% 25% 25% 25%;
+    grid-row-gap: 3em;
+    height: 10em;
+  }
+
+  .drawerContainer {
+    height: 100%;
+    margin-left: 20em;
+    background-color: rgb(15, 15, 15);
+    overflow-x: hidden !important;
+    margin-left: 15em;
+  }
+
+  .button {
+    height: 100% !important;
+    width: 25% !important;
+    padding-right: 10em;
+    justify-self: flex-end !important;
+    color: #fff !important;
+    font-size: x-large !important;
+  }
+
+  .buttonLogin {
+    height: 100%;
+    padding-right: 10.5em;
+    justify-self: flex-end;
+    color: #fff;
+  }
+
+  .mat-drawer-content {
+    overflow-x: hidden;
+  }
+
+  .buttonWrapper {
+    height: 20%;
+    align-self: center;
+  }
+
+  .drawer {
+    margin-top: 15em;
+    width: 25%;
+    height: 100%;
+    padding-top: 15em;
+    background-color: rgb(15, 15, 15) !important;
+    position: fixed;
+    overflow-x: hidden;
+  }
+
+  .screen {
+    height: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .username { 
+    height: 100%!important;
+    padding-right: 7.3em;
+    margin-top: -6em;
+    justify-self: flex-end!important;
+    color: #fff!important;
+    font-size: x-large!important;
+    font-weight: 700;
+    -webkit-user-select: none;
+    user-select: none;
+    position: fixed;
+  }
+}
+
+/* WIDESCREEN */
+@media screen and (min-width: 1921px) {
+  .buttons {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 25% 25% 25% 25% 25%;
+    grid-row-gap: 3em;
+    height: 10em;
+  }
+
+  .drawerContainer {
+    height: 100%;
+    margin-left: 20em;
+    background-color: rgb(15, 15, 15);
+    overflow-x: hidden !important;
+    margin-left: 15em;
+  }
+
+  .username { 
+    width: 20em;
+    margin-right: -10em;
+    margin-top: -6em;
+    justify-self: flex-end!important;
+    color: #fff!important;
+    font-size: x-large!important;
+    font-weight: 700;
+    -webkit-user-select: none;
+    user-select: none;
+    position: fixed;
+  }
+
+  .button {
+    height: 100% !important;
+    width: 25% !important;
+    padding-right: 10em;
+    justify-self: flex-end !important;
+    color: #fff !important;
+    font-size: x-large !important;
+  }
+
+  .buttonLogin {
+    height: 100%;
+    padding-right: 10.5em;
+    justify-self: flex-end;
+    color: #fff;
+  }
+
+  .mat-drawer-content {
+    overflow-x: hidden;
+  }
+
+  .buttonWrapper {
+    height: 20%;
+    align-self: center;
+  }
+
+  .drawer {
+    padding-top: 15em;
+    width: 25%;
+    height: 100%;
+    background-color: rgb(15, 15, 15) !important;
+    position: fixed;
+    overflow-x: hidden;
+  }
+
+  .screen {
+    height: 100% !important;
+    overflow-x: hidden !important;
+    margin-left: 20em;
+  }
+}
+.buttons {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 25% 25% 25% 25%;
+  grid-row-gap: 3em;
+  height: 10em;
+}
+
+.drawerContainer {
+  height: 100%;
+  margin-left: 20em;
+  background-color: rgb(15, 15, 15);
+  overflow-x: hidden !important;
+  margin-left: 15em;
+}
+
+.button {
+  height: 100% !important;
+  width: 25% !important;
+  padding-right: 10em;
+  justify-self: flex-end !important;
+  color: #fff !important;
+  font-size: x-large !important;
+}
+
+.buttonLogin {
+  height: 100%;
+  padding-right: 10.5em;
+  justify-self: flex-end;
+  color: #fff;
+}
+
+.mat-drawer-content {
+  overflow-x: hidden;
+}
+
+.buttonWrapper {
+  height: 20%;
+  align-self: center;
+}
+
+.drawer {
+  margin-top: 15em;
+  width: 25%;
+  height: 100%;
+  padding-top: 15em;
+  background-color: rgb(15, 15, 15) !important;
+  position: fixed;
+  overflow-x: hidden;
+}
+
+.screen {
+  height: 100% !important;
+  overflow-x: hidden !important;
+}
