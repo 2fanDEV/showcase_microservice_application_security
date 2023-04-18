@@ -9,6 +9,7 @@ This application implements most, if not all of the 17 security measures mention
 ["Towards a Security Benchmark for the Architectural Design of Microservice Applications"](https://dl.acm.org/doi/abs/10.1145/3538969.3543807)
 
 However, 2 of the rules were not implemented yet. (R15 and R17) -> R15 was never intended to be implemented as a service mesh deployment was never planned, thus will never be implemented in this showcase application.
+
 R17 on the other hand is something where I still have to figure out how to implement the hashicorp vault in addition to the spring cloud vault package.
 R17 is going to be implemented at some point this year (2023)
 
