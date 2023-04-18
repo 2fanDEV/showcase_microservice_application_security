@@ -2,7 +2,7 @@
 
 This label here is indicating if the repository is maintained currently. 
 
-I plan to go back to this project at around summer/autumn, where I resolve all of the issues that I have created.
+I plan to go back to this project at around autumn/winter '23, where I resolve all of the issues that I have created.
 
 This application implements most, if not all of the 17 security measures mentioned in:
 
