@@ -6,8 +6,11 @@ I plan to go back to this project at around summer/autumn, where I resolve all o
 
 This application was part of my bachelor thesis. 
 
-It intends to implement most, if not all of the security measures mentioned in 
+It intends to implement most, if not all of the 17 security measures mentioned in 
+
 [Towards a Security Benchmark for the Architectural Design of Microservice Applications](https://dl.acm.org/doi/abs/10.1145/3538969.3543807)
+
+
 
 # Information
 This is a microservice application created with Spring Boot and Angular.
